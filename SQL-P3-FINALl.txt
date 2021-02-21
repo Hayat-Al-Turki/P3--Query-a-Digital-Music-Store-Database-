@@ -1,0 +1,71 @@
+/* Query 1- query used for first insight */
+
+SELECT A.ArtistId   AS Artist_Id, A.Name  AS Name, COUNT(T.Name) AS Songs 
+  FROM Artist  A
+  JOIN Album 
+   ON Album.ArtistId = A.ArtistId 
+JOIN Track T
+ ON Album.AlbumId = T.AlbumId 
+JOIN Genre G
+  ON T.GenreId = G.GenreId 
+ WHERE G.Name = 'Rock' 
+GROUP BY A.ArtistId, A.Name, G.Name 
+ORDER BY Songs DESC 
+ LIMIT 10;
+
+
+/* Query 2- query used for second insight */
+
+SELECT A.name, COUNT (DISTINCT(T.Composer))  AS  Number_of_composers
+FROM Artist A
+JOIN Album 
+ON A.ArtistId = Album.ArtistId
+JOIN Track T
+ON Album.AlbumId = T.AlbumId
+GROUP BY A.name
+ORDER BY COUNT (DISTINCT(T.Composer)) DESC
+LIMIT 10;
+
+
+/* Query 3- query used for third insight */
+
+SELECT M.Name AS  media_type, COUNT(M.Name) AS Number_of_purchases
+FROM MediaType M
+JOIN Track  T
+ON M.MediaTypeId=T.MediaTypeId
+JOIN InvoiceLine IL
+ON T.TrackId= IL.TrackId
+JOIN Invoice I
+ON IL.InvoiceId= I.InvoiceId
+GROUP BY M.Name
+ORDER BY Number_of_purchases  DESC;
+
+
+* Query 4- query used for fourth insight */
+
+SELECT a.name, ROUND( SUM(IL.unitprice *IL.Quantity)) as AmountSpent
+FROM artist a
+JOIN Album
+ON a.ArtistId = album.ArtistId
+JOIN track t
+ON album.AlbumId = t.AlbumId
+JOIN InvoiceLine IL
+ON t.TrackId = IL.TrackId
+JOIN invoice 
+ON invoice.InvoiceId = IL.InvoiceId
+GROUP BY a.name
+ORDER BY AmountSpent DESC
+LIMIT 5;
+
+
+* Query 5- query used for fifth insight */
+
+SELECT i.BillingCountry AS Country, COUNT(*) Rock_Songs
+FROM Invoice i
+JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId
+JOIN Track t ON il.TrackId = t.TrackId
+JOIN Genre g ON t.GenreId = g.Genreid
+WHERE g.Name = 'Rock'
+GROUP BY BillingCountry
+ORDER BY Rock_Songs  DESC, BillingCountry
+LIMIT 10;
